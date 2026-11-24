@@ -54,8 +54,6 @@ python -m pip install requests ollama "mcp[cli]<2" "a2a-sdk>=1,<2" httpx uvicorn
 ollama pull llama3.1:8b
 ```
 
-> У MCP SDK 2.x API `FastMCP` змінився. Поточний `mcp_server/server.py` використовує імпорт `from mcp.server.fastmcp import FastMCP`, тому потрібна версія 1.x.
-
 ## 4. Запуск мікросервісів
 
 Запуск з кореня проєкту:
@@ -76,7 +74,6 @@ curl -i http://localhost:8080/health
 | Producer Agent Card | `http://127.0.0.1:9001/.well-known/agent-card.json` |
 | Consumer Agent Card | `http://127.0.0.1:9002/.well-known/agent-card.json` (після локального запуску Consumer) |
 
-Якщо порти `8080`, `15672` чи `9001` зайняті проєктами з попередніх лабораторних, зупиніть ті контейнери або узгоджено змініть порти Compose й адресу `API_BASE_URL`. Не запускайте одночасно два сервіси на одному хостовому порту.
 
 ## 5. Завдання 1 — Function Calling
 
@@ -169,7 +166,6 @@ docker compose exec redis redis-cli GET "outbox:EVENT_ID"
 
 У перевіреному запуску журнал містив `OUTBOX PUBLISHED` для створеного Event ID, а запис Redis мав `"type": "a2a.ping"` та `"status": "published"`.
 
-**Важливо:** `published` підтверджує публікацію повідомлення, але не є доказом виконання бізнес-обробки RabbitMQ Consumer. Поточний `services/consumer.py` обробляє лише `homework.created`; тестова подія `a2a.ping` не змінює домашні завдання. A2A Producer і Consumer у цьому сценарії мають програмно визначені навички без окремої LLM усередині них; використання LLM продемонстровано окремо в завданні 1.
 
 ## 8. Результати
 
@@ -182,17 +178,6 @@ docker compose exec redis redis-cli GET "outbox:EVENT_ID"
 | A2A Consumer | Власна Agent Card, звернення через A2A до Producer і повернення результату |
 | Outbox / RabbitMQ | Відповідний `OUTBOX PUBLISHED` та запис Redis зі статусом `published` |
 
-## 9. Обмеження та завершення
-
-Проєкт є навчальним прототипом. Для реального використання необхідні авторизація MCP/A2A, захищений мережевий доступ, продумана політика доступу до даних, системні тести prompt injection, контроль повторної публікації подій і спостереження за доставленням та обробкою повідомлень.
-
-Зупинка контейнерів:
-
-```bash
-docker compose down
-```
-
-Локальний Consumer Agent (`python -m a2a_agents.consumer_server`) зупиняється окремо через `Ctrl+C`. Команду `docker compose down -v` без потреби не використовуйте, оскільки вона також видаляє томи Compose.
 
 ## Висновок
 
