@@ -79,3 +79,17 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
+ 
+  a2a_producer:
+    build:
+      context: .
+      dockerfile: Dockerfile.a2a
+    ports:
+      - "9001:9001"
+    environment:
+      PRODUCER_A2A_URL: "http://127.0.0.1:9001"
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
