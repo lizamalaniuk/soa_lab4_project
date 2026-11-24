@@ -40,19 +40,6 @@ soa_lab4_project/
 - **MCP:** окремий stdio-сервер надає інструменти `list_homeworks`, `get_homework`, `get_user`; їх перевірено в MCP Inspector.
 - **A2A:** клієнт звертається до Consumer Agent (`9002`), Consumer через JSON-RPC звертається до Producer Agent (`9001`), Producer записує тестову подію `a2a.ping` у Redis Outbox. Outbox Publisher надсилає її до RabbitMQ.
 
-```text
-LLM (Ollama) ─ Function Calling ─ REST API Client ─┐
-MCP Inspector ─ MCP Server ─ REST API Client ──────┼─ Nginx :8080 ─ REST services ─ Redis
-                                                   
-A2A Test Client → Consumer Agent :9002 → Producer Agent :9001
-                                             ↓
-                                        Redis Outbox
-                                             ↓
-                                      Outbox Publisher
-                                             ↓
-                                          RabbitMQ
-```
-
 ## 3. Вимоги
 
 - Windows, Git Bash або термінал VS Code, Python із встановленими залежностями, Docker Desktop.
